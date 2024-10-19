@@ -17,17 +17,33 @@ export async function CreateServer() {
   type Query {
   ${client.queries}
   }
+
+  type Mutation {
+  ${client.mutation}
+  }
     `,
     resolvers: {
       Query: {
         ...client.resolver.query,
+      },
+      Mutation: {
+        ...client.resolver.mutation,
       },
     },
   });
 
   await graphqlServer.start();
 
-  app.use("/graphql", expressMiddleware(graphqlServer));
+  app.use(
+    "/graphql",
+    expressMiddleware(graphqlServer, {
+      context: async ({ req }) => {
+        return {
+          address: req.headers.authorization?.split(" ")[1],
+        };
+      },
+    })
+  );
 
   return app;
 }

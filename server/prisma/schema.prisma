@@ -18,6 +18,8 @@ model Doctor {
   name      String
   email     String
   profilePicture String?
+  hash     String
+  registrationNumber String
   isVerified Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -27,7 +29,7 @@ model Patient {
   address  String @id
   name      String
   email     String
-  reportAddress String?
+  // reportAddress String?
   profilePicture String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

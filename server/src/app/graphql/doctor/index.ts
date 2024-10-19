@@ -1,11 +1,11 @@
 import { type } from "./type";
 import { queries } from "./queries";
-// import { mutations } from "./mutations";
+import { mutation } from "./mutation";
 import { resolver } from "./resolver";
 
 export const client = {
   type,
   queries,
-  // mutations,
+  mutation,
   resolver,
 };

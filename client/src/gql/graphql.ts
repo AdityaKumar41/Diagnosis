@@ -16,12 +16,10 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type VerifyCheckupQueryVariables = Exact<{
-  address: Scalars['String']['input'];
-}>;
+export type VerifyCheckupQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type VerifyCheckupQuery = { __typename?: 'Query', VerifyCheckup?: { __typename?: 'Client', id: string } | null };
 
 
-export const VerifyCheckupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"VerifyCheckup"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"address"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"VerifyCheckup"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"address"},"value":{"kind":"Variable","name":{"kind":"Name","value":"address"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<VerifyCheckupQuery, VerifyCheckupQueryVariables>;
+export const VerifyCheckupDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"VerifyCheckup"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"VerifyCheckup"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<VerifyCheckupQuery, VerifyCheckupQueryVariables>;

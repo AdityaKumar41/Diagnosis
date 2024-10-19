@@ -1,5 +1,15 @@
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Input,
+} from "@nextui-org/react";
+import { DataTag } from "@tanstack/react-query";
 import { Link } from "@nextui-org/react";
 import {
   CheckCircle,
@@ -9,14 +19,110 @@ import {
   Stethoscope,
   User,
 } from "lucide-react";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Context } from "../context/Provider";
+import { Tabs, Tab } from "@nextui-org/react";
+import { ethers } from "ethers";
+import { useForm, SubmitHandler } from "react-hook-form";
+import contractABI from "../../doctor.json";
+import { VerifyCheckup } from "../hooks/Client";
 
 export default function HomePage() {
-  const { data } = useContext(Context);
-  console.log(data);
+  const WalletAddress = import.meta.env.VITE_DOCTOR_CONTRACT;
+  const { account } = useContext(Context);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { data, error } = VerifyCheckup(account, { enabled: !!account });
+  type Inputs = {
+    name: string;
+    email: string;
+    redgistration: string;
+  };
+
+  const { register, handleSubmit } = useForm<Inputs>();
+
+  useEffect(() => {
+    if (account !== "" && account !== null) {
+      if (!data && error?.response?.errors?.[0]?.message === "User not found") {
+        onOpen();
+      }
+    }
+  }, [account, data, error, onOpen]);
+
+  const submit = async (data: Inputs) => {
+    const { name, email, redgistration } = data;
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(WalletAddress, contractABI, signer);
+    const rex = await contract.registerDoctor(name, redgistration);
+    console.log(rex);
+
+    
+  };
   return (
     <main className="flex-1 self-center">
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {() => (
+            <>
+              <div className="flex w-full flex-col">
+                <ModalHeader>
+                  <h2 className="text-xl font-bold">
+                    Register to HealthConnect
+                  </h2>
+                </ModalHeader>
+                <Tabs aria-label="Options">
+                  <Tab key="Doctor" title="Doctor">
+                    <Card>
+                      <CardBody>
+                        <form
+                          onSubmit={handleSubmit(submit)}
+                          className="flex flex-col gap-4"
+                        >
+                          <Input
+                            type="name"
+                            label="Name"
+                            placeholder="Enter your Name"
+                            required
+                            className="dark"
+                            {...register("name")}
+                          />
+                          <Input
+                            type="email"
+                            label="Email"
+                            placeholder="Enter your email"
+                            required
+                            className="dark"
+                            {...register("email")}
+                          />
+                          <Input
+                            type="redgistration"
+                            label="Redgistartion Number"
+                            placeholder="Enter your Redgistration Number"
+                            required
+                            className="dark"
+                            {...register("redgistration")}
+                          />
+                          <Button type="submit">Submit</Button>
+                        </form>
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                  <Tab key="Patients" title="Patients">
+                    <Card>
+                      <CardBody>
+                        Ut enim ad minim veniam, quis nostrud exercitation
+                        ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        Duis aute irure dolor in reprehenderit in voluptate
+                        velit esse cillum dolore eu fugiat nulla pariatur.
+                      </CardBody>
+                    </Card>
+                  </Tab>
+                </Tabs>
+              </div>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-60">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center">

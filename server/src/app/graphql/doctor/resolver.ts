@@ -1,8 +1,13 @@
 import prismaClient from "../../client";
 
 const query = {
-  VerifyCheckup: async (parent: any, { address }: { address: string }) => {
+  VerifyCheckup: async (parent: any, result: any, context: any) => {
+    console.log(context);
+    if (context.address === undefined) {
+      throw new Error("Unauthorized");
+    }
     try {
+      const { address } = context;
       // Perform both queries in parallel to avoid sequential calls
       const [doctor, patient] = await Promise.all([
         prismaClient.doctor.findUnique({
@@ -25,4 +30,32 @@ const query = {
   },
 };
 
-export const resolver = { query };
+const mutation = {
+  createDoctor: async (
+    parent: any,
+    {
+      name,
+      registrationNumber,
+      hash,
+      email,
+    }: {
+      name: string;
+      registrationNumber: string;
+      hash: string;
+      email: string;
+    },
+    context: any
+  ) => {
+    prismaClient.doctor.create({
+      data: {
+        name,
+        email,
+        registrationNumber,
+        hash,
+        address: context.address,
+      },
+    });
+  },
+};
+
+export const resolver = { query, mutation };

@@ -1,11 +1,14 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { VerifyCheckup } from "../hooks/Client";
 
-export const Context = createContext({
+interface ContextInterface {
+  account: string;
+  connectWallet: () => void;
+}
+
+export const Context = createContext<ContextInterface>({
   account: "",
   connectWallet: () => {},
-
-  data: {},
 });
 
 interface ContextProviderProps {
@@ -52,9 +55,9 @@ const ContextProvider: React.FC<ContextProviderProps> = ({ children }) => {
   useEffect(() => {
     checkIfWalletIsConnect();
   }, []);
-  const data = VerifyCheckup(account);
+
   return (
-    <Context.Provider value={{ account, data, connectWallet }}>
+    <Context.Provider value={{ account, connectWallet }}>
       {children}
     </Context.Provider>
   );

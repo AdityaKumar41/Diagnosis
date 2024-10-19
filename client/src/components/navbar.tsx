@@ -6,21 +6,28 @@ import {
   Link,
   Button,
 } from "@nextui-org/react";
-import { IconHomeBitcoin } from "@tabler/icons-react";
-import { ethers } from "ethers";
 import { Cross } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
-import { VerifyCheckup } from "../hooks/Client";
+import { useContext } from "react";
+import { Spinner } from "@nextui-org/react";
 import { Context } from "../context/Provider";
+import { VerifyCheckup } from "../hooks/Client";
 
 declare global {
   interface Window {
     ethereum: any;
   }
+  interface Data {
+    isFetching: boolean;
+    error: any;
+    data: any;
+  }
 }
 
 export default function NavbarCom() {
   const { connectWallet, account } = useContext(Context);
+
+  const { data, isFetching } = VerifyCheckup();
+
   const displayAccount = account
     ? account.substring(0, 6) + "..." + account.substring(account.length - 4)
     : "Connect";
