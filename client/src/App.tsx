@@ -1,21 +1,19 @@
-import { Route, Routes } from "react-router-dom";
+import React from "react";
+import NavbarCom from "./components/Navbar";
+import HomePage from "./components/Home";
+import Footer from "./components/Footer";
+import ContextProvider from "./context/Provider";
 
-import IndexPage from "@/pages/index";
-import DocsPage from "@/pages/docs";
-import PricingPage from "@/pages/pricing";
-import BlogPage from "@/pages/blog";
-import AboutPage from "@/pages/about";
-
-function App() {
+const App = () => {
   return (
-    <Routes>
-      <Route element={<IndexPage />} path="/" />
-      <Route element={<DocsPage />} path="/docs" />
-      <Route element={<PricingPage />} path="/pricing" />
-      <Route element={<BlogPage />} path="/blog" />
-      <Route element={<AboutPage />} path="/about" />
-    </Routes>
+    <ContextProvider>
+      <div className="flex flex-col min-h-screen">
+        <NavbarCom />
+        <HomePage />
+        <Footer />
+      </div>
+    </ContextProvider>
   );
-}
+};
 
 export default App;

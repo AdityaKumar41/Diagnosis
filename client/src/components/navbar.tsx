@@ -1,155 +1,63 @@
-import { Button } from "@nextui-org/button";
-import { Kbd } from "@nextui-org/kbd";
-import { Link } from "@nextui-org/link";
-import { Input } from "@nextui-org/input";
 import {
-  Navbar as NextUINavbar,
+  Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-} from "@nextui-org/navbar";
-import { link as linkStyles } from "@nextui-org/theme";
-import clsx from "clsx";
+  Link,
+  Button,
+} from "@nextui-org/react";
+import { IconHomeBitcoin } from "@tabler/icons-react";
+import { ethers } from "ethers";
+import { Cross } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
+import { VerifyCheckup } from "../hooks/Client";
+import { Context } from "../context/Provider";
 
-import { siteConfig } from "@/config/site";
-import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  TwitterIcon,
-  GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
-  SearchIcon,
-} from "@/components/icons";
-import { Logo } from "@/components/icons";
-import {
-  Key,
-  ReactElement,
-  JSXElementConstructor,
-  ReactNode,
-  ReactPortal,
-} from "react";
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
 
-export const Navbar = () => {
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-100",
-        input: "text-sm",
-      }}
-      endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
-          K
-        </Kbd>
-      }
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  );
-
+export default function NavbarCom() {
+  const { connectWallet, account } = useContext(Context);
+  const displayAccount = account
+    ? account.substring(0, 6) + "..." + account.substring(account.length - 4)
+    : "Connect";
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand className="gap-3 max-w-fit">
-          <Link
-            className="flex justify-start items-center gap-1"
-            color="foreground"
-            href="/"
-          >
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
+    <Navbar>
+      <NavbarBrand className="gap-3">
+        <Cross className="text-danger-300" />
+        <p className="font-bold text-inherit">Health Connect</p>
+      </NavbarBrand>
+      {/* <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarItem>
+          <Link color="foreground" href="#">
+            Features
           </Link>
-        </NavbarBrand>
-        <div className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map(
-            (item: {
-              href: Key | null | undefined;
-              label:
-                | string
-                | number
-                | boolean
-                | ReactElement<any, string | JSXElementConstructor<any>>
-                | Iterable<ReactNode>
-                | ReactPortal
-                | null
-                | undefined;
-            }) => (
-              <NavbarItem key={item.href}>
-                <Link
-                  className={clsx(
-                    linkStyles({ color: "foreground" }),
-                    "data-[active=true]:text-primary data-[active=true]:font-medium"
-                  )}
-                  color="foreground"
-                  href={item.href}
-                >
-                  {item.label}
-                </Link>
-              </NavbarItem>
-            )
-          )}
-        </div>
-      </NavbarContent>
-
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <ThemeSwitch />
         </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden md:flex">
+        <NavbarItem isActive>
+          <Link href="#" aria-current="page">
+            Customers
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="#">
+            Integrations
+          </Link>
+        </NavbarItem>
+      </NavbarContent> */}
+      <NavbarContent justify="end">
+        <NavbarItem>
           <Button
-            isExternal
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
+            color="primary"
             variant="flat"
+            onClick={() => connectWallet()}
           >
-            Connect
+            {displayAccount}
           </Button>
         </NavbarItem>
       </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        {searchInput}
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
-      </NavbarMenu>
-    </NextUINavbar>
+    </Navbar>
   );
-};
+}

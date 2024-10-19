@@ -1,17 +1,18 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { NextUIProvider } from "@nextui-org/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import App from "./App.tsx";
-import { Provider } from "./provider.tsx";
-import "@/styles/globals.css";
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Provider>
+import "./index.css";
+const queryClient = new QueryClient();
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <NextUIProvider>
         <App />
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>,
+        <ReactQueryDevtools />
+      </NextUIProvider>
+    </QueryClientProvider>
+  </StrictMode>
 );
